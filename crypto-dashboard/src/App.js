@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import formatData from './utils';
 import './App.css';
 
 function App() {
@@ -47,6 +48,50 @@ function App() {
     apiCall();
     //same as componentDidMount prevents infinite loop
   }, []);
+
+  useEffect(() => {
+    if (!first.current) {
+      console.log('returning on first render');
+      return;
+    }
+
+    console.log('running pair change');
+    let message = {
+      type: 'subscribe',
+      product_ids: [pair],
+      channels: ['ticker']
+    };
+
+    let jsonMessage = JSON.stringify(message);
+    webSocket.current.send(jsonMessage);
+
+    //granularity = number of seconds. This is a daily price chart.
+    let historicalDataURL = `${url}/products/${pair}/candles?granularity=86400`;
+
+    const fetchHistroicalData = async () => {
+      let dataArr = [];
+      await fetch(historicalDataURL)
+        .then((res) => res.json())
+        .then((data) => (dataArr = data));
+      console.log(dataArr);
+      let formattedData = formatData(dataArr);
+      setPastData(formattedData);
+    };
+
+    fetchHistroicalData();
+
+    webSocket.current.onmessage = (e) => {
+      let data = JSON.parse(e.data);
+      if (data.type !== 'ticker') {
+        console.log('non ticker event'.e);
+        return;
+      }
+      if (data.product_id === pair) {
+        setPrice(data.price);
+      }
+    };
+    //dependency array only runs when there is a pair to update
+  }, [pair]);
 
   return (
     <div className="App">
