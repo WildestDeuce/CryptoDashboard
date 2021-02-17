@@ -68,7 +68,7 @@ function App() {
     //granularity = number of seconds. This is a daily price chart.
     let historicalDataURL = `${url}/products/${pair}/candles?granularity=86400`;
 
-    const fetchHistroicalData = async () => {
+    const fetchHistoricalData = async () => {
       let dataArr = [];
       await fetch(historicalDataURL)
         .then((res) => res.json())
@@ -78,8 +78,8 @@ function App() {
       setPastData(formattedData);
     };
 
-    fetchHistroicalData();
-
+    fetchHistoricalData();
+    //whenever a price is updated in coinbase, receive a message
     webSocket.current.onmessage = (e) => {
       let data = JSON.parse(e.data);
       if (data.type !== 'ticker') {
@@ -93,9 +93,28 @@ function App() {
     //dependency array only runs when there is a pair to update
   }, [pair]);
 
-  return (
-    <div className="App">
+  const handleSelect = (e) => {
+    console.log(e.target.value)
 
+    let unsubMessage = {
+      type: 'unsubscribe',
+      product_ids: [pair],
+      channels: ['ticker']
+    }
+    let unsubscirbe = JSON.stringify(unsubMessage);
+
+    webSocket.current.send(unsubscirbe);
+    //activates effect hook listening for pair state change to get new values 
+    setPair(e.target.value);
+  }
+
+  return (
+    <div>
+      {<select name='currency' value={pair} onChange={handleSelect}>
+        {currencies.map((currency, index) => {
+          return <option key={index} value={currency.id}>{currency.display_name}</option>
+        })}
+      </select>}
     </div>
   );
 }
