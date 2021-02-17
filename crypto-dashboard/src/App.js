@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import formatData from './utils';
+import Dashboard from './components/Dashboard';
 import './App.css';
 
 function App() {
@@ -109,12 +110,13 @@ function App() {
   }
 
   return (
-    <div>
+    <div className='container'>
       {<select name='currency' value={pair} onChange={handleSelect}>
         {currencies.map((currency, index) => {
           return <option key={index} value={currency.id}>{currency.display_name}</option>
         })}
       </select>}
+      <Dashboard price={price} data={pastData} />
     </div>
   );
 }
