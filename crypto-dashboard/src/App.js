@@ -84,9 +84,9 @@ function App() {
     webSocket.current.onmessage = (e) => {
       let data = JSON.parse(e.data);
       if (data.type !== 'ticker') {
-        console.log('non ticker event'.e);
         return;
       }
+      //creates realtime dashboard effect for price of currency
       if (data.product_id === pair) {
         setPrice(data.price);
       }
@@ -95,7 +95,6 @@ function App() {
   }, [pair]);
 
   const handleSelect = (e) => {
-    console.log(e.target.value)
 
     let unsubMessage = {
       type: 'unsubscribe',
@@ -107,15 +106,21 @@ function App() {
     webSocket.current.send(unsubscirbe);
     //activates effect hook listening for pair state change to get new values 
     setPair(e.target.value);
-  }
+  };
 
   return (
     <div className='container'>
-      {<select name='currency' value={pair} onChange={handleSelect}>
-        {currencies.map((currency, index) => {
-          return <option key={index} value={currency.id}>{currency.display_name}</option>
-        })}
-      </select>}
+      {
+        <select name='currency' value={pair} onChange={handleSelect}>
+          {currencies.map((currency, index) => {
+            return (
+              <option key={index} value={currency.id}>
+                {currency.display_name}
+              </option>
+            );
+          })}
+        </select>
+      }
       <Dashboard price={price} data={pastData} />
     </div>
   );

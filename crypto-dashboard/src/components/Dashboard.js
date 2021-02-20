@@ -9,7 +9,7 @@ function Dashboard({ price, data }) {
         },
         responsive: true,
         maintainAspectRatio: false
-    }
+    };
     if (price === '0.00') {
         return (
             <h2>Please select a currency pair.</h2>
@@ -24,7 +24,7 @@ function Dashboard({ price, data }) {
                 <Line> data={data} options={options}</Line>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Dashboard;
