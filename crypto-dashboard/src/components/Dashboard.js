@@ -1,5 +1,5 @@
-import React from 'react';
-import Line from 'react-chartjs-2';
+import React, { useRef } from 'react';
+import { Line } from 'react-chartjs-2';
 
 function Dashboard({ price, data }) {
     const options = {
@@ -15,13 +15,14 @@ function Dashboard({ price, data }) {
             <h2>Please select a currency pair.</h2>
         )
     }
+
     return (
         <div className='dashboard'>
             <h2>
                 {`$${price}`}
             </h2>
             <div className='chart-container'>
-                <Line> data={data} options={options}</Line>
+                <Line data={data} options={options} />
             </div>
         </div>
     );
