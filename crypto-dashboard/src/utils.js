@@ -19,13 +19,14 @@ const formatData = (data) => {
         let month = date.getMonth() + 1;
         let year = date.getFullYear();
 
-        let final = `${month}-${day}-${year}`;
+        let final = `${month}-${da fy
+    }-${ year }`;
         return final;
     });
 
     let priceArr = data.map((val) => {
         return val[4];
-    })
+    });
 
     priceArr.reverse();
     dates.reverse();
